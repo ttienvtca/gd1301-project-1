@@ -32,10 +32,27 @@ bool HelloWorld::init()
     _character = Character::create(characterInfo);
     _character->setPosition(visibleSize / 2);
 
-    TMXTiledMap* map = TMXTiledMap::create("Map/map-demo.tmx");
-    TMXObjectGroup* objGroup = map->getObjectGroup("SpawnPoint");
+    _map = GameMap::create("Map/map-demo.tmx");
+    TMXObjectGroup* objGroup = _map->getObjectGroup("SpawnPoint");
     ValueMap charPoint = objGroup->getObject("CharacterSpawnPoint");
     
+
+    // 
+    auto effects = _map->getObjectGroup("Effects")->getObjects();
+
+    for (auto ef : effects)
+    {
+        std::string efName = ef.asValueMap()["name"].asString();
+        if (efName == "Fire")
+        {
+            log("fire");
+        }
+        else if (efName == "Sun")
+        {
+            log("sun");
+        }
+    }
+
     Vec2 position;
     position.x = charPoint["x"].asFloat();
     position.y = charPoint["y"].asFloat();
@@ -43,7 +60,7 @@ bool HelloWorld::init()
     _character->setPosition(position);
 
     this->addChild(_character, 1);
-    this->addChild(map);
+    this->addChild(_map);
     this->scheduleUpdate();
     return true;
 }
@@ -52,9 +69,13 @@ void HelloWorld::update(float dt)
 {
     Vec2 direction = KeyboardInput::getInstance()->getDirection();
 
-    Vec2 newPostion = _character->getPosition() + direction * 100.0f * dt;
-    _character->setPosition(newPostion);
-    _defaultCamera->setPosition(newPostion);
+    Vec2 nextPostion = _character->getPosition() + direction * 100.0f * dt;
+    int metaID = _map->getMetaAtPos(nextPostion);
+    if (metaID == GameMap::MetaRed) return;
+
+
+    _character->setPosition(nextPostion);
+    _defaultCamera->setPosition(nextPostion);
 }
 
 void HelloWorld::onEnter()

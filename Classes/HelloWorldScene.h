@@ -2,6 +2,7 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "Map/GameMap.h"
 
 #include "Character/Character.h"
 USING_NS_CC;
@@ -22,7 +23,7 @@ protected:
     float _horizontal, _vertical;
     float _moveSpeed = 1;
     Character* _character;
-
+    GameMap* _map;
 protected:
     void update(float dt) override;
     void onEnter() override;
