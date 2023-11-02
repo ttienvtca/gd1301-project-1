@@ -16,12 +16,10 @@ bool DemoScrollView::init()
     scrollview->setContentSize(Size(500, 300));
     scrollview->setBackGroundImage("inv-background.png");
 
-
     auto inner = Sprite::create("ivn-inner.png");
     inner->setPosition(inner->getContentSize() / 2);
     scrollview->setInnerContainerSize(inner->getContentSize());
     scrollview->addChild(inner);
-
 
     scrollview->setPosition(Director::getInstance()->getVisibleSize() / 2);
     this->addChild(scrollview);

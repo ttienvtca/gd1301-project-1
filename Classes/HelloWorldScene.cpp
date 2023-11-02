@@ -74,7 +74,7 @@ void HelloWorld::update(float dt)
     if (metaID == GameMap::MetaRed) return;
 
 
-    _character->setPosition(nextPostion);
+    //_character->setPosition(nextPostion);
     _defaultCamera->setPosition(nextPostion);
 }
 

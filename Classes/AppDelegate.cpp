@@ -68,8 +68,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	register_all_packages();
 
 	Size visibleSize = director->getVisibleSize();
-	//auto scene = HelloWorld::createScene();
-	auto scene = DemoScrollView::create();
+	auto scene = HelloWorld::createScene();
+	//auto scene = DemoScrollView::create();
 
 	/*auto bg = Sprite::create("bg1.png");
 	bg->setPosition(visibleSize / 2);
