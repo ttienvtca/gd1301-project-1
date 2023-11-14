@@ -1,0 +1,19 @@
+{
+    "characterName": "HeroXX",
+    "level": 100,
+    "speed": 300.0,
+    "weapons": [
+        {
+            "weaponName": "W1",
+            "level": 1
+        },
+        {
+            "weaponName": "W2",
+            "level": 1
+        },
+        {
+            "weaponName": "W3",
+            "level": 1
+        }
+    ]
+}

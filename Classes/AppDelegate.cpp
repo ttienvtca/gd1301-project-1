@@ -71,8 +71,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	Size visibleSize = director->getVisibleSize();
 	//auto scene = HelloWorld::createScene();
-	//auto scene = DemoJson::create();
-	auto scene = DemoPhysics::create();
+	auto scene = DemoJson::create();
+	//auto scene = DemoPhysics::create();
 	//auto scene = DemoScrollView::create();
 
 	/*auto bg = Sprite::create("bg1.png");

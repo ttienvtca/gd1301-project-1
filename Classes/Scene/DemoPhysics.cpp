@@ -1,4 +1,5 @@
 #include "DemoPhysics.h"
+#include "DefineBitmask.h"
 
 bool DemoPhysics::init()
 {
@@ -8,37 +9,41 @@ bool DemoPhysics::init()
 	}
 
 	this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	this->getPhysicsWorld()->setGravity(Vec2(0, -400));
+	// create edge box
 
-	_character = Sprite::create("CloseNormal.png");
+	PhysicsMaterial material = PhysicsMaterial(1, 0, 1);
+	auto edgeBody = PhysicsBody::createEdgeBox(
+		Director::getInstance()->getVisibleSize(), material, 10);
+	edgeBody->setGravityEnable(false);
+	edgeBody->setCategoryBitmask(DefineBitmask::WALL);
+	edgeBody->setCollisionBitmask(DefineBitmask::BALL);
+	edgeBody->setContactTestBitmask(DefineBitmask::BALL);
 
+	auto edgeNode = Node::create();
+	edgeNode->setPhysicsBody(edgeBody);
+	edgeNode->setPosition(Director::getInstance()->getVisibleSize() / 2);
+	
+
+	// create character
+	_character = Ball::create();
 	_character->setPosition(Director::getInstance()->getVisibleSize() / 2);
 
 	auto mouseListener = EventListenerMouse::create();
 	mouseListener->onMouseDown = CC_CALLBACK_1(DemoPhysics::mouseDown, this);
-
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
+
 	this->addChild(_character);
+	this->addChild(edgeNode);
     return true;
 }
 
 void DemoPhysics::mouseDown(EventMouse* event)
 {
 	log("mouse down");
-
-	Sprite* bullet = Sprite::create("1.png");
-
-	// create body
-	auto body = PhysicsBody::createEdgeBox(bullet->getContentSize());
-	bullet->setPhysicsBody(body);
-
-	// shoot
 	Vec2 direction = event->getLocationInView() - _character->getPosition();
 	direction.normalize();
 
-	bullet->getPhysicsBody()->setVelocity(direction * 10);
-	bullet->setPosition(_character->getPosition());
-
-	this->addChild(bullet);
-
+	_character->getPhysicsBody()->applyForce(Vec2(0, 1) * 3000);
 }

@@ -2,6 +2,7 @@
 #define __DEMO_PHYSIC_H__
 
 #include "cocos2d.h"
+#include "Ball.h"
 USING_NS_CC;
 
 class DemoPhysics : public Scene
@@ -11,9 +12,7 @@ public:
 	CREATE_FUNC(DemoPhysics);
 
 private:
-	Sprite* _character;
-
-
+	Ball* _character;
 private:
 	void mouseDown(EventMouse* event);
 };
