@@ -6,6 +6,8 @@
 #include "Input/KeyboardInput.h"
 #include "DemoScrollView.h"
 
+#include "Scene/DemoJson.h"
+#include "Scene/DemoPhysics.h"
 
 #if USE_AUDIO_ENGINE
 #include "audio/include/AudioEngine.h"
@@ -68,7 +70,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	register_all_packages();
 
 	Size visibleSize = director->getVisibleSize();
-	auto scene = HelloWorld::createScene();
+	//auto scene = HelloWorld::createScene();
+	//auto scene = DemoJson::create();
+	auto scene = DemoPhysics::create();
 	//auto scene = DemoScrollView::create();
 
 	/*auto bg = Sprite::create("bg1.png");

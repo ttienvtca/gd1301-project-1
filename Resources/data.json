@@ -1,0 +1,14 @@
+{
+    "coin" : 1000,
+    "playerName" : "heroXX",
+    "stats" : [
+        {
+            "atk": 10,
+            "hp" : 100
+        },
+        {
+            "atk": 20,
+            "hp" : 200
+        }
+    ]
+}

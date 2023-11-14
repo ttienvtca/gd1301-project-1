@@ -61,6 +61,7 @@ file(GLOB_RECURSE GAME_HEADER
 
 file(GLOB_RECURSE GAME_SOURCE
     Classes/*.cpp
+    Classes/*.c
     )
 set(GAME_INC_DIRS
   "${CMAKE_CURRENT_SOURCE_DIR}/Classes"
