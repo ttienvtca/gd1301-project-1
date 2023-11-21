@@ -15,6 +15,7 @@ bool DemoPhysics::init()
 	PhysicsMaterial material = PhysicsMaterial(1, 0, 1);
 	auto edgeBody = PhysicsBody::createEdgeBox(
 		Director::getInstance()->getVisibleSize(), material, 10);
+
 	edgeBody->setGravityEnable(false);
 	edgeBody->setCategoryBitmask(DefineBitmask::WALL);
 	edgeBody->setCollisionBitmask(DefineBitmask::BALL);
