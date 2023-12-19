@@ -27,6 +27,7 @@ protected:
 protected:
     void update(float dt) override;
     void onEnter() override;
+    void mouseDown(EventMouse* event);
 
     void goToSecondScene();
 };

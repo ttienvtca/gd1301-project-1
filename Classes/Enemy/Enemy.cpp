@@ -1,13 +1,10 @@
-#include "Character.h"
+#include "Enemy.h"
 #include "Utilities/AnimationUtilities.h"
-#include "Input/KeyboardInput.h"
-#include "State/CharacterAttackState.h"
-#include "State/CharacterIdleState.h"
-#include "State/CharacterRunState.h"
+#include "DefineBitmask.h"
 
-Character* Character::create(EntityInfo* info)
+Enemy* Enemy::create(EntityInfo* info)
 {
-    auto newObject = new Character();
+    auto newObject = new Enemy();
     if (newObject && newObject->init(info))
     {
         newObject->autorelease();
@@ -18,11 +15,10 @@ Character* Character::create(EntityInfo* info)
     return nullptr;
 }
 
-bool Character::init(EntityInfo* info)
+bool Enemy::init(EntityInfo* info)
 {
     if (!Entity::init(info))
     {
-        log("Init Character failed!");
         return false;
     }
 
@@ -33,24 +29,28 @@ bool Character::init(EntityInfo* info)
     _model = Sprite::createWithSpriteFrame(animationIdle->getFrames().at(0)->getSpriteFrame());
     _model->runAction(RepeatForever::create(idle));
 
-    this->scheduleUpdate();
+    PhysicsMaterial material = PhysicsMaterial(1, 0, 1);
+    auto body = PhysicsBody::createCircle(_model->getContentSize().height / 2, material);
+    body->setRotationEnable(false);
+    body->setCategoryBitmask(DefineBitmask::ENEMY);
+    body->setCollisionBitmask(DefineBitmask::CHARACTER | DefineBitmask::BULLET);
+    body->setContactTestBitmask(DefineBitmask::BULLET);
 
-    KeyboardInput::getInstance()->addKey(EventKeyboard::KeyCode::KEY_SPACE);
-
-    _stateMachine = StateMachine::create(this);
-    _stateMachine->addState("idle", new CharacterIdleState());
-    _stateMachine->addState("attack", new CharacterAttackState());
-    _stateMachine->addState("run", new CharacterRunState());
-    _stateMachine->setCurrentState("idle");
+    this->setPhysicsBody(body);
 
     this->addChild(_model);
-    this->addChild(_stateMachine);
+
     return true;
 }
 
-bool Character::loadAnimations()
+void Enemy::takeDamage(int dame)
 {
-    std::string filePath = "Character/" + _info->_entityName;
+    log("enemy take damage: %d", dame);
+}
+
+bool Enemy::loadAnimations()
+{
+    std::string filePath = "Enemy/" + _info->_entityName;
     AnimationUtils::loadSpriteFrameCache(filePath, "-idle");
     AnimationUtils::loadSpriteFrameCache(filePath, "-run");
     AnimationUtils::loadSpriteFrameCache(filePath, "-attack");
@@ -59,11 +59,5 @@ bool Character::loadAnimations()
     AnimationUtils::createAnimation(_info->_entityName + "-run", 1.0f);
     AnimationUtils::createAnimation(_info->_entityName + "-attack", 1.0f);
 
-
     return true;
-}
-
-void Character::update(float dt)
-{
-
 }

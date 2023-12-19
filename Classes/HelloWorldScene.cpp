@@ -3,6 +3,8 @@
 #include "Input/KeyboardInput.h"
 #include "Entity/EntityInfo.h"
 #include "Character/Character.h"
+#include "Enemy/Enemy.h"
+#include "Bullet/Bullet.h"
 
 USING_NS_CC;
 
@@ -19,10 +21,12 @@ static void problemLoading(const char* filename)
 
 bool HelloWorld::init()
 {
-    if ( !Scene::init() )
+    if ( !Scene::initWithPhysics() )
     {
         return false;
     }
+    this->getPhysicsWorld()->setGravity(Vec2::ZERO);
+    this->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -36,22 +40,15 @@ bool HelloWorld::init()
     TMXObjectGroup* objGroup = _map->getObjectGroup("SpawnPoint");
     ValueMap charPoint = objGroup->getObject("CharacterSpawnPoint");
     
+    // mouse input
+    auto mouseListener = EventListenerMouse::create();
+    mouseListener->onMouseDown = CC_CALLBACK_1(HelloWorld::mouseDown, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
-    // 
-    auto effects = _map->getObjectGroup("Effects")->getObjects();
 
-    for (auto ef : effects)
-    {
-        std::string efName = ef.asValueMap()["name"].asString();
-        if (efName == "Fire")
-        {
-            log("fire");
-        }
-        else if (efName == "Sun")
-        {
-            log("sun");
-        }
-    }
+    // enemy
+    auto enemy = Enemy::create(new EntityInfo(1, "ice-cube"));
+    enemy->setPosition(Vec2(500, 500));
 
     Vec2 position;
     position.x = charPoint["x"].asFloat();
@@ -60,6 +57,7 @@ bool HelloWorld::init()
     _character->setPosition(position);
 
     this->addChild(_character, 1);
+    this->addChild(enemy, 1);
     this->addChild(_map);
     this->scheduleUpdate();
     return true;
@@ -73,8 +71,6 @@ void HelloWorld::update(float dt)
     int metaID = _map->getMetaAtPos(nextPostion);
     if (metaID == GameMap::MetaRed) return;
 
-
-    //_character->setPosition(nextPostion);
     _defaultCamera->setPosition(nextPostion);
 }
 
@@ -85,6 +81,22 @@ void HelloWorld::onEnter()
         KeyboardInput::getInstance()->removeFromParent();
 
     this->addChild(KeyboardInput::getInstance());
+}
+
+void HelloWorld::mouseDown(EventMouse* event)
+{
+    Vec2 posInput = event->getLocationInView();
+
+    auto camBoundingBox = Camera::getDefaultCamera()->getBoundingBox();
+    Vec2 worldPos = camBoundingBox.origin - camBoundingBox.size / 2 + posInput;
+
+    Vec2 direction = worldPos - _character->getPosition();
+    direction.normalize();
+    auto bullet = Bullet::create("1");
+    bullet->setPosition(_character->getPosition());
+    bullet->getPhysicsBody()->setVelocity(direction * 100);
+
+    this->addChild(bullet, 1);
 }
 
 void HelloWorld::goToSecondScene()
